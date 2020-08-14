@@ -1,0 +1,203 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Material Design Bootstrap</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <!-- Your custom styles (optional) -->
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <style type="text/css">
+    html,
+    body,
+    header,
+    .carousel {
+      height: 60vh;
+    }
+
+    @media (max-width: 740px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+    @media (min-width: 800px) and (max-width: 850px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+{% include "base.html" %}
+{% load cart_template_tags %}
+{% include "navbar.html" %}
+
+
+
+  <main>
+    <div class="container">
+
+<div class="table-responsive text-nowrap">
+  <h2>Order Summary</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Item Name</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Total Price</th>
+
+      </tr>
+    </thead>
+    <tbody>
+    {% for order_item in object.items.all %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+
+        <td>{{ order_item.item.title }}</td>
+        <td>{{ order_item.item.price }}</td>
+        <td>
+          {% if order_item.quantity > 0 %}
+          <a href="{% url 'core:remove-single-item-from-cart' order_item.item.slug %}"><i class="fas fa-minus-square mr-2"></i></a>
+          {% else %}
+
+          {% endif %}
+          {{ order_item.quantity }}
+          <a href="{% url 'core:add-to-cart'  order_item.item.slug %}"><i class="fas fa-plus-square ml-2"></i></a>
+
+        </td>
+        <td>
+          {% if order_item.item.discount_price %}
+            ${{ order_item.get_total_discount_item_price }}
+          <span class="badge badge-success">(Savings ${{ order_item.get_amount_saved }})</span>
+          {% else %}
+            ${{ order_item.get_total_item_price }}
+          {% endif %}
+         <a href="{% url 'core:remove-from-cart'  order_item.item.slug %}">
+           <i class="fas fa-trash-alt" style="padding-left:35px;"></i></a>
+        </td>
+
+      </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">Your cart is empty</td>
+        </tr>
+     <tr>
+      <td colspan="5">
+
+      <a class="btn btn-primary float-right " href="/checkout">Continue Shopping</a>
+
+      </td>
+    </tr>
+     {% endfor %}
+    {% if object.coupon %}
+    <tr>
+      <td colspan="4"><b>Coupon</b></td>
+
+      <td >- ${{ object.coupon.amount }} </td>
+    </tr>
+    {% endif %}
+    {% if object.get_total %}
+    <tr>
+      <td colspan="4"><b>Order Total</b></td>
+
+      <td >${{ object.get_total }} </td>    <!-- object is the order -->
+    </tr>
+    <tr>
+      <td colspan="5">
+        <a class="btn btn-warning float-right ml-2" href="/checkout">Proceed to checkout</a>
+      <a class="btn btn-primary float-right " href="/checkout">Continue Shopping</a>
+
+      </td>
+    </tr>
+    {% endif %}
+    </tbody>
+  </table>
+
+</div>
+
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+  <!--Footer-->
+  <footer class="page-footer text-center font-small mt-4 wow fadeIn">
+
+
+
+
+    <hr class="my-4">
+
+    <!-- Social icons -->
+    <div class="pb-4">
+
+      <a href="https://twitter.com/shreyapohekar" target="_blank">
+        <i class="fab fa-twitter mr-3"></i>
+      </a>
+
+
+      <a href="https://pinterest.ca/shreyapohekar/" target="_blank">
+        <i class="fab fa-pinterest mr-3"></i>
+      </a>
+
+      <a href="https://github.com/shreyapohekar.com" target="_blank">
+        <i class="fab fa-github mr-3"></i>
+      </a>
+
+      <a href="https://www.linkedin.com/in/shreya-pohekar-b7357a135/" target="_blank">
+        <i class="fab fa-linkedin mr-3"></i>
+      </a>
+    </div>
+    <!-- Social icons -->
+
+    <!--Copyright-->
+    <div class="footer-copyright py-3">
+      © 2020 Copyright:
+      <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> Shreya Pohekar </a>
+    </div>
+    <!--/.Copyright-->
+
+  </footer>
+  <!--/.Footer-->
+
+  <!-- SCRIPTS -->
+  <!-- JQuery -->
+  <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+  <!-- Initializations -->
+  <script type="text/javascript">
+    // Animations initialization
+    new WOW().init();
+
+  </script>
+</body>
+
+</html>
